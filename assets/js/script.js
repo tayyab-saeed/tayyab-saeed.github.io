@@ -55,62 +55,133 @@ overlay.addEventListener("click", testimonialsModalFunc);
 
 
 
-// custom select variables
-const select = document.querySelector("[data-select]");
-const selectItems = document.querySelectorAll("[data-select-item]");
-const selectValue = document.querySelector("[data-selecct-value]");
-const filterBtn = document.querySelectorAll("[data-filter-btn]");
+// project modal variables
+const projectModalContainer = document.querySelector("[data-project-modal-container]");
+const projectModalCloseBtn = document.querySelector("[data-project-modal-close-btn]");
+const projectOverlay = document.querySelector("[data-project-overlay]");
+const projectModalContent = document.querySelector("[data-project-modal-content]");
+const projectLinks = document.querySelectorAll("[data-project-link]");
 
-select.addEventListener("click", function () { elementToggleFunc(this); });
-
-// add event in all select items
-for (let i = 0; i < selectItems.length; i++) {
-  selectItems[i].addEventListener("click", function () {
-
-    let selectedValue = this.innerText.toLowerCase();
-    selectValue.innerText = this.innerText;
-    elementToggleFunc(select);
-    filterFunc(selectedValue);
-
-  });
-}
-
-// filter variables
-const filterItems = document.querySelectorAll("[data-filter-item]");
-
-const filterFunc = function (selectedValue) {
-
-  for (let i = 0; i < filterItems.length; i++) {
-
-    if (selectedValue === "all") {
-      filterItems[i].classList.add("active");
-    } else if (selectedValue === filterItems[i].dataset.category) {
-      filterItems[i].classList.add("active");
-    } else {
-      filterItems[i].classList.remove("active");
-    }
-
+// project modal toggle function
+const projectModalFunc = function () {
+  if (projectModalContainer) {
+    projectModalContainer.classList.toggle("active");
+    projectOverlay.classList.toggle("active");
   }
-
 }
 
-// add event in all filter button items for large screen
-let lastClickedBtn = filterBtn[0];
+// project details data
+const projectDetails = {
+  profolio: {
+    title: "Profolio - Real Estate Management",
+    company: "Bayut (Dubizzle Labs)",
+    duration: "Jun 2024 — July 2025",
+    role: "Software Engineer",
+    technologies: ["React Native", "TypeScript", "Expo", "Tanstack Query", "Elastic Search", "Firebase", "Xcode", "Android Studio"],
+    description: "A comprehensive cross-platform real estate lead management application serving 1,075+ agencies across UAE and Egypt with 50K+ monthly active users.",
+    features: [
+      "Upgraded app from v2.0 to v3.0 with 30+ production features",
+      "Improved onboarding completion by 40% and engagement by 15-20%",
+      "Built redesigned navigation system and analytics-driven overview screen",
+      "Implemented interactive dashboards for tracking agent responsiveness and property performance",
+      "Developed advanced property filters and achievement badge system",
+      "Integrated global haptic feedback increasing user sentiment by 25%"
+    ],
+    impact: [
+      "50,000+ monthly active users",
+      "1,075+ agencies across UAE and Egypt",
+      "40% improvement in onboarding completion",
+      "15-20% boost in user engagement"
+    ],
+    images: [
+      "./assets/images/project-1.jpg",
+      "./assets/images/project-1.jpg",
+      "./assets/images/project-1.jpg"
+    ]
+  },
+  triangle: {
+    title: "Triangle Wallet - Crypto Wallet",
+    company: "Devsinc",
+    duration: "Aug 2023 — May 2024",
+    role: "Associate Software Engineer",
+    technologies: ["React Native", "Redux Toolkit", "Express.js", "Fireblocks API", "Xcode", "Android Studio"],
+    description: "A secure cryptocurrency wallet application for iOS and Android offering real-time asset tracking, transactions, and interactive price analytics.",
+    features: [
+      "End-to-end frontend development with React Native",
+      "Full ownership of core UI screens including authentication flows",
+      "Real-time crypto price tracking with 24h trend visualizations",
+      "Interactive price graphs with dynamic data visualization",
+      "Wallet operations including buy/sell transactions",
+      "Optimized performance with reusable components and efficient state management"
+    ],
+    impact: [
+      "Seamless cross-platform experience on iOS and Android",
+      "Real-time price updates for multiple cryptocurrencies",
+      "Enhanced user engagement with interactive graphs",
+      "Improved app performance through optimization"
+    ],
+    images: [
+      "./assets/images/project-2.png",
+      "./assets/images/project-2.png",
+      "./assets/images/project-2.png"
+    ]
+  }
+};
 
-for (let i = 0; i < filterBtn.length; i++) {
+// add click event to all project links
+for (let i = 0; i < projectLinks.length; i++) {
+  projectLinks[i].addEventListener("click", function (e) {
+    e.preventDefault();
+    
+    const projectKey = this.getAttribute("data-project-link");
+    const project = projectDetails[projectKey];
+    
+    if (project) {
+      // Build modal content
+      let modalHTML = `
+        <div class="project-detail-header">
+          <h2 class="h2">${project.title}</h2>
+          <p class="project-meta">${project.company} | ${project.role}</p>
+          <p class="project-duration">${project.duration}</p>
+        </div>
 
-  filterBtn[i].addEventListener("click", function () {
+        <div class="project-images">
+          <img src="${project.images[0]}" alt="${project.title}" loading="lazy">
+        </div>
 
-    let selectedValue = this.innerText.toLowerCase();
-    selectValue.innerText = this.innerText;
-    filterFunc(selectedValue);
+        <div class="project-detail-content">
+          <h3 class="h3">About the Project</h3>
+          <p class="project-description">${project.description}</p>
 
-    lastClickedBtn.classList.remove("active");
-    this.classList.add("active");
-    lastClickedBtn = this;
+          <h3 class="h3">Technologies Used</h3>
+          <ul class="tech-list">
+            ${project.technologies.map(tech => `<li class="tech-item">${tech}</li>`).join('')}
+          </ul>
 
+          <h3 class="h3">Key Features</h3>
+          <ul class="feature-list">
+            ${project.features.map(feature => `<li class="feature-item"><ion-icon name="checkmark-circle-outline"></ion-icon> ${feature}</li>`).join('')}
+          </ul>
+
+          <h3 class="h3">Impact & Results</h3>
+          <ul class="impact-list">
+            ${project.impact.map(item => `<li class="impact-item"><ion-icon name="trending-up-outline"></ion-icon> ${item}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+      
+      projectModalContent.innerHTML = modalHTML;
+      projectModalFunc();
+    }
   });
+}
 
+// add click event to modal close button and overlay
+if (projectModalCloseBtn) {
+  projectModalCloseBtn.addEventListener("click", projectModalFunc);
+}
+if (projectOverlay) {
+  projectOverlay.addEventListener("click", projectModalFunc);
 }
 
 
